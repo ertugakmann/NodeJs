@@ -52,7 +52,7 @@ const tempOverview = fs.readFileSync(
 );
 
 const tempCard = fs.readFileSync(
-  `${__dirname}/templates/template-product.html`,
+  `${__dirname}/templates/template-card.html`,
   "utf-8"
 );
 
@@ -65,12 +65,14 @@ const server = http.createServer((req, res) => {
   //Overview Page
   if (pathName === "/" || pathName === "/overview") {
     res.writeHead(200, {
-      "Content-type": "application/json",
+      "Content-type": "text/html",
     });
 
-    const cardsHtml = dataObj.map((el) => replaceTemplate(tempCard, el));
-    console.log(cardsHtml);
-    res.end(tempOverview);
+    const cardsHtml = dataObj
+      .map((el) => replaceTemplate(tempCard, el))
+      .join("");
+    const output = tempOverview.replace("{%PRODUCT_CARDS%}", cardsHtml);
+    res.end(output);
   }
 
   //Product Page
